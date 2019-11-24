@@ -23,10 +23,9 @@ double* gera_transposta( size_t matrix_tam , double* A ){
 double* mult( size_t matrix_tam , double* A , double* B , size_t block_tam ){
     double* C = malloc( sizeof(double) * matrix_tam * matrix_tam );
     int block_x,block_y,linha,coluna,k, num_blocos = matrix_tam/block_tam , lim1 , lim2 ;
-    double temp1,temp2,temp3,temp4,temp5,temp6,temp7,temp8,temp_A;
+    double temp_sum[8],temp_A;
     double *C_linha_pointer , *A_linha_pointer;
-    double *B_coluna_pointer1 , *B_coluna_pointer2 , *B_coluna_pointer3 , *B_coluna_pointer4; 
-    double *B_coluna_pointer5 , *B_coluna_pointer6 , *B_coluna_pointer7 , *B_coluna_pointer8; 
+    double* B_coluna_pointers[8];
     double* BT = gera_transposta(matrix_tam,B);
 
     for( block_x = 0 ; block_x < num_blocos ; block_x++ )
@@ -39,56 +38,56 @@ double* mult( size_t matrix_tam , double* A , double* B , size_t block_tam ){
             A_linha_pointer = A + linha*matrix_tam;
             lim2 = (block_x+1)*block_tam;
             for( coluna = block_x*block_tam ; coluna < lim2 ; coluna += OPERATIONS_PER_LOOP ){
-                temp1 = 0;
-                B_coluna_pointer1 = BT + (coluna+0)*matrix_tam;
+                temp_sum[0] = 0;
+                B_coluna_pointers[0] = BT + (coluna+0)*matrix_tam;
                 #if OPERATIONS_PER_LOOP >= 2
-                temp2 = 0;
-                B_coluna_pointer2 = BT + (coluna+1)*matrix_tam;
+                temp_sum[1] = 0;
+                B_coluna_pointers[1] = BT + (coluna+1)*matrix_tam;
                 #if OPERATIONS_PER_LOOP >= 4
-                temp3 = 0;
-                temp4 = 0;
-                B_coluna_pointer3 = BT + (coluna+2)*matrix_tam;
-                B_coluna_pointer4 = BT + (coluna+3)*matrix_tam;
+                temp_sum[2] = 0;
+                temp_sum[3] = 0;
+                B_coluna_pointers[2] = BT + (coluna+2)*matrix_tam;
+                B_coluna_pointers[3] = BT + (coluna+3)*matrix_tam;
                 #if OPERATIONS_PER_LOOP == 8
-                temp5 = 0;
-                temp6 = 0;
-                temp7 = 0;
-                temp8 = 0;
-                B_coluna_pointer5 = BT + (coluna+4)*matrix_tam;
-                B_coluna_pointer6 = BT + (coluna+5)*matrix_tam;
-                B_coluna_pointer7 = BT + (coluna+6)*matrix_tam;
-                B_coluna_pointer8 = BT + (coluna+7)*matrix_tam;
+                temp_sum[4] = 0;
+                temp_sum[5] = 0;
+                temp_sum[6] = 0;
+                temp_sum[7] = 0;
+                B_coluna_pointers[4] = BT + (coluna+4)*matrix_tam;
+                B_coluna_pointers[5] = BT + (coluna+5)*matrix_tam;
+                B_coluna_pointers[6] = BT + (coluna+6)*matrix_tam;
+                B_coluna_pointers[7] = BT + (coluna+7)*matrix_tam;
                 #endif
                 #endif
                 #endif
                 for( k = 0 ; k < matrix_tam ; k ++ ){
                     temp_A = A_linha_pointer[k];
-                    temp1 += temp_A * B_coluna_pointer1[k] ;
+                    temp_sum[0] += temp_A * B_coluna_pointers[0][k] ;
                     #if OPERATIONS_PER_LOOP >= 2
-                    temp2 += temp_A * B_coluna_pointer2[k] ;
+                    temp_sum[1] += temp_A * B_coluna_pointers[1][k] ;
                     #if OPERATIONS_PER_LOOP >= 4
-                    temp3 += temp_A * B_coluna_pointer3[k] ;
-                    temp4 += temp_A * B_coluna_pointer4[k] ;
+                    temp_sum[2] += temp_A * B_coluna_pointers[2][k] ;
+                    temp_sum[3] += temp_A * B_coluna_pointers[3][k] ;
                     #if OPERATIONS_PER_LOOP == 8
-                    temp5 += temp_A * B_coluna_pointer5[k] ;
-                    temp6 += temp_A * B_coluna_pointer6[k] ;
-                    temp7 += temp_A * B_coluna_pointer7[k] ;
-                    temp8 += temp_A * B_coluna_pointer8[k] ;
+                    temp_sum[4] += temp_A * B_coluna_pointers[4][k] ;
+                    temp_sum[5] += temp_A * B_coluna_pointers[5][k] ;
+                    temp_sum[6] += temp_A * B_coluna_pointers[6][k] ;
+                    temp_sum[7] += temp_A * B_coluna_pointers[7][k] ;
                     #endif
                     #endif
                     #endif
                 }
-                C_linha_pointer[coluna+0] = temp1;
+                C_linha_pointer[coluna+0] = temp_sum[0];
                 #if OPERATIONS_PER_LOOP >= 2
-                C_linha_pointer[coluna+1] = temp2;
+                C_linha_pointer[coluna+1] = temp_sum[1];
                 #if OPERATIONS_PER_LOOP >= 4
-                C_linha_pointer[coluna+2] = temp3;
-                C_linha_pointer[coluna+3] = temp4;
+                C_linha_pointer[coluna+2] = temp_sum[2];
+                C_linha_pointer[coluna+3] = temp_sum[3];
                 #if OPERATIONS_PER_LOOP == 8
-                C_linha_pointer[coluna+4] = temp5;
-                C_linha_pointer[coluna+5] = temp6;
-                C_linha_pointer[coluna+6] = temp7;
-                C_linha_pointer[coluna+7] = temp8;
+                C_linha_pointer[coluna+4] = temp_sum[4];
+                C_linha_pointer[coluna+5] = temp_sum[5];
+                C_linha_pointer[coluna+6] = temp_sum[6];
+                C_linha_pointer[coluna+7] = temp_sum[7];
                 #endif
                 #endif
                 #endif
@@ -112,10 +111,14 @@ void printa_matriz( size_t matrix_tam , double* A ){
 
 int main( int argc , char** argv ){
 
-    #if (OPERATIONS_PER_LOOP != 1 )&&(OPERATIONS_PER_LOOP != 2 )&&(OPERATIONS_PER_LOOP != 4 )&&(OPERATIONS_PER_LOOP != 8 )
-        printf("OPERATIONS_PER_LOOP deve ser 1 , 2 , 4 ou 8");
+    if( (OPERATIONS_PER_LOOP != 1 ) 
+    && (OPERATIONS_PER_LOOP != 2 )
+    && (OPERATIONS_PER_LOOP != 4 )
+    &&( OPERATIONS_PER_LOOP != 8 )
+    &&( OPERATIONS_PER_LOOP != 16 ) ){
+        printf("OPERATIONS_PER_LOOP deve ser 1 , 2 , 4 , 8 , 16");
         return 2;
-    #endif
+    }
 
     int matrix_tam = 1024;
     int block_tam;
@@ -141,7 +144,8 @@ int main( int argc , char** argv ){
     double* C = mult( matrix_tam , A , B , block_tam);
     double final_t = omp_get_wtime();
 
-    printf("Duracao da multiplicacao(TAM=%d,block_tam=%d): %.3fs\n" , matrix_tam , block_tam , final_t - initial_t );
+    printf("Duracao da multiplicacao(TAM=%d,block_tam=%d,OPERATIONS_PER_LOOP=%d): %.3fs\n" 
+        , matrix_tam , block_tam , OPERATIONS_PER_LOOP , final_t - initial_t );
     
     if( matrix_tam <= 16 ){
         printf("A:\n");
