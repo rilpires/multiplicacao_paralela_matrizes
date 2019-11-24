@@ -128,7 +128,8 @@ int main( int argc , char** argv ){
 
     double* A = malloc( sizeof(double)*matrix_tam*matrix_tam );
     double* B = malloc( sizeof(double)*matrix_tam*matrix_tam );
-    for( int i = 0 ; i < matrix_tam*matrix_tam ; i++ ){
+    int i;
+    for( i = 0 ; i < matrix_tam*matrix_tam ; i++ ){
         A[i] = ((double)rand()) / RAND_MAX;
         B[i] = ((double)rand()) / RAND_MAX;
         // A[i] = i % matrix_tam; // Facil de checar corretude
