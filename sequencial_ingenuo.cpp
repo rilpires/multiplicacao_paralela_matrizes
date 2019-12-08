@@ -43,7 +43,7 @@ int main( int argc , char** argv ){
 
     printf("Duracao da multiplicacao(TAM=%d): %.3fs\n" , matrix_tam , final_t - initial_t );
     
-    if( matrix_tam > 1024 )
+    if( matrix_tam < 1024 )
         escreve_matriz( nome_resultado , matrix_tam , C );
 
 }
