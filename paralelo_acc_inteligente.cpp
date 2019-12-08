@@ -12,7 +12,7 @@ FLOAT* gera_transposta( size_t matrix_tam , FLOAT* A ){
     FLOAT* ret = (FLOAT*)malloc( sizeof(FLOAT)*matrix_tam*matrix_tam );
     int i , j;
 
-    #pragma acc data copyin(A) copyout(ret)
+    #pragma acc data copyin(A[:matrix_tam*matrix_tam]) copyout(ret[:matrix_tam*matrix_tam])
     #pragma acc parallel loop collapse(2)
     for( j = 0 ; j < matrix_tam ; j++ ){
         for( i = 0 ; i < matrix_tam ; i++ ){
@@ -33,7 +33,7 @@ FLOAT* mult( size_t matrix_tam , FLOAT* A , FLOAT* B , size_t block_tam ){
     FLOAT* B_coluna_pointers[8];
     FLOAT* BT = gera_transposta(matrix_tam,B);
 
-    #pragma acc data copyin(A,B) copyout(C)
+    #pragma acc data copyin(A[:matrix_tam*matrix_tam],B[:matrix_tam*matrix_tam]) copyout(C[:matrix_tam*matrix_tam])
     #pragma acc parallel loop collapse(2)
     {
         for( block_x = 0 ; block_x < num_blocos ; block_x++ )
