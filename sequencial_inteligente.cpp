@@ -105,9 +105,8 @@ int main( int argc , char** argv ){
     if( (OPERATIONS_PER_LOOP != 1 ) 
     && (OPERATIONS_PER_LOOP != 2 )
     && (OPERATIONS_PER_LOOP != 4 )
-    &&( OPERATIONS_PER_LOOP != 8 )
-    &&( OPERATIONS_PER_LOOP != 16 ) ){
-        printf("OPERATIONS_PER_LOOP deve ser 1 , 2 , 4 , 8 , 16");
+    &&( OPERATIONS_PER_LOOP != 8 ) ){
+        printf("OPERATIONS_PER_LOOP deve ser 1 , 2 , 4 ou 8 ");
         return 2;
     }
 
@@ -132,7 +131,7 @@ int main( int argc , char** argv ){
     printf("Duracao da multiplicacao(TAM=%d,block_tam=%d,OPERATIONS_PER_LOOP=%d): %.3fs\n" 
         , matrix_tam , block_tam , OPERATIONS_PER_LOOP , final_t - initial_t );
 
-    if( matrix_tam < 1024 )
+    if( matrix_tam <= 1024 )
         escreve_matriz_sequencial( nome_resultado , matrix_tam , C );
 
 }

@@ -2,3 +2,6 @@ sequencial_ingenuo
 sequencial_inteligente
 .vscode
 *.o
+resultado_*
+paralelo_omp_inteligente
+paralelo_acc_inteligente
