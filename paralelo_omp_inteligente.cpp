@@ -121,6 +121,10 @@ int main( int argc , char** argv ){
     if( argc >= 2 ) matrix_tam = atoi( argv[1] );
     if( argc >= 3 ) block_tam = atoi( argv[2] ); else block_tam = matrix_tam;
     if( argc >= 4 ) num_threads = atoi( argv[3] ); else num_threads = 1;
+    if( block_tam < OPERATIONS_PER_LOOP ){
+        printf("block_tam deve ser menor ou igual a OPERATIONS_PER_LOOP \n");
+        return 2;
+    }
     omp_set_num_threads(num_threads);
 
     char nome_matriz_a[64] , nome_matriz_b[64] , nome_resultado[64];

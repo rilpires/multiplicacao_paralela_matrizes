@@ -115,6 +115,10 @@ int main( int argc , char** argv ){
     if( argc >= 2 ) matrix_tam = atoi( argv[1] );
     if( argc >= 3 ) block_tam = atoi( argv[2] );
     else block_tam = matrix_tam;
+    if( block_tam < OPERATIONS_PER_LOOP ){
+        printf("block_tam deve ser menor ou igual a OPERATIONS_PER_LOOP \n");
+        return 2;
+    }
 
     char nome_matriz_a[64] , nome_matriz_b[64] , nome_resultado[64];
     sprintf( nome_matriz_a , "A_%d_%d.txt" , matrix_tam , matrix_tam );
