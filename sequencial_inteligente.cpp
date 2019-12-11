@@ -4,7 +4,7 @@
 typedef double FLOAT;
 
 #ifndef OPERATIONS_PER_LOOP
-    #define OPERATIONS_PER_LOOP 1
+    #define OPERATIONS_PER_LOOP 4
 #endif
 
 FLOAT* gera_transposta( size_t matrix_tam , FLOAT* A ){
