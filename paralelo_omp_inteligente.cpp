@@ -139,10 +139,14 @@ int main( int argc , char** argv ){
     FLOAT* C = mult( matrix_tam , A , B , block_tam);
     FLOAT final_t = omp_get_wtime();
 
-    printf("Duracao da multiplicacao(TAM=%d,block_tam=%d,OPERATIONS_PER_LOOP=%d,num_threads=%d): %.3fs\n" 
+    printf("[OMP](TAM=%d,block_tam=%d,OPERATIONS_PER_LOOP=%d,num_threads=%d): %.3fs\n" 
         , matrix_tam , block_tam , OPERATIONS_PER_LOOP , num_threads , final_t - initial_t );
 
     if( matrix_tam <= 1024 )
         escreve_matriz_sequencial( nome_resultado , matrix_tam , C );
 
+    
+    printf("[Corretude]\nOs 3 primeiros valores de C:\n" );
+    printf("C: %f %f %f \n" , C[0] , C[1] , C[2] );
+    
 }

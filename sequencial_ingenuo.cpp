@@ -46,4 +46,6 @@ int main( int argc , char** argv ){
     if( matrix_tam <= 1024 )
         escreve_matriz( nome_resultado , matrix_tam , C );
 
+    printf("[Corretude]\nOs 3 primeiros valores de C:\n" );
+    printf("C: %f %f %f \n" , C[0] , C[1] , C[2] );
 }

@@ -47,7 +47,7 @@ FLOAT* mult( size_t matrix_tam , FLOAT* A , FLOAT* B ){
 
 int main( int argc , char** argv ){
 
-    int matrix_tam = 1024 , block_tam , num_threads = 1;
+    int matrix_tam = 1024 ;
     if( argc >= 2 ) matrix_tam = atoi( argv[1] );
 
     char nome_matriz_a[64] , nome_matriz_b[64] , nome_resultado[64];
@@ -67,9 +67,8 @@ int main( int argc , char** argv ){
     if( matrix_tam <= 1024 )
         escreve_matriz_sequencial( nome_resultado , matrix_tam , C );
 
-    printf("Os 3 primeiros valores de A , B e C:\n" );
-    printf("A: %f %f %f \n" , A[0] , A[1] , A[2] );
-    printf("B: %f %f %f \n" , B[0] , B[1] , B[2] );
+    
+    printf("[Corretude]\nOs 3 primeiros valores de C:\n" );
     printf("C: %f %f %f \n" , C[0] , C[1] , C[2] );
     
 }
