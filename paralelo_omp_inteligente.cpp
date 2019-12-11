@@ -1,6 +1,16 @@
 #include "matriz_io.cpp"
 #include <omp.h>
 
+/**
+ * Compilar com:
+ *      pg++ -mp paralelo_omp_inteligente.cpp -o paralelo_omp_inteligente -DOPERATIONS_PER_LOOP=8
+ *          ou     
+ *      g++ -fopenmp paralelo_omp_inteligente.cpp -o paralelo_omp_inteligente -DOPERATIONS_PER_LOOP=8
+ * 
+ * Executar com:
+ *      ./paralelo_omp_inteligente [TAMANHO_MATRIZ] [TAMANHO_DO_BLOCO] [NUM_THREADS]
+**/
+
 typedef double FLOAT;
 
 #ifndef OPERATIONS_PER_LOOP

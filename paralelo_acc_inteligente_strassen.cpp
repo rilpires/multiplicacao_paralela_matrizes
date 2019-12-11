@@ -2,6 +2,15 @@
 #include <omp.h>
 #include <openacc.h>
 
+/**
+ * Compilar com:
+ *      pg++ -acc paralelo_acc_inteligente_strassen.cpp -o paralelo_acc_inteligente_strassen
+ * 
+ * Executar com:
+ *      ./paralelo_acc_inteligente_strassen [TAMANHO_MATRIZ]
+**/
+
+
 typedef double FLOAT;
 
 void gera_transposta( size_t matrix_tam , FLOAT* MAT , FLOAT* MAT_T ){

@@ -1,6 +1,14 @@
 #include "matriz_io.cpp"
 #include <omp.h>
 
+/**
+ * Compilar com:
+ *      g++ sequencial_inteligente.cpp -o sequencial_inteligente -DOPERATIONS_PER_LOOP=8
+ * 
+ * Executar com:
+ *      ./sequencial_inteligente [TAMANHO_MATRIZ] [TAMANHO_DO_BLOCO]
+**/
+
 typedef double FLOAT;
 
 #ifndef OPERATIONS_PER_LOOP

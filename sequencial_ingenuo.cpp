@@ -1,6 +1,14 @@
 #include "matriz_io.cpp"
 #include <omp.h>
 
+/**
+ * Compilar com:
+ *      g++ sequencial_ingenuo.cpp -o sequencial_ingenuo -DOPERATIONS_PER_LOOP=8
+ * 
+ * Executar com:
+ *      ./sequencial_ingenuo [TAMANHO_MATRIZ]
+**/
+
 typedef double FLOAT;
 
 FLOAT** mult( size_t matrix_tam , FLOAT** A , FLOAT** B ){

@@ -1,11 +1,22 @@
 #include "matriz_io.cpp"
 #include <omp.h>
 
+/**
+ * Compilar com:
+ *      pg++ -mp paralelo_omp_inteligente_strassen.cpp -o paralelo_omp_inteligente_strassen -DOPERATIONS_PER_LOOP=8
+ *          ou     
+ *      g++ -fopenmp paralelo_omp_inteligente_strassen.cpp -o paralelo_omp_inteligente_strassen -DOPERATIONS_PER_LOOP=8
+ * 
+ * Executar com:
+ *      ./paralelo_omp_inteligente_strassen [TAMANHO_MATRIZ] [TAMANHO_DO_BLOCO] [NUM_THREADS]
+**/
+
 typedef double FLOAT;
 
 #ifndef OPERATIONS_PER_LOOP
     #define OPERATIONS_PER_LOOP 4
 #endif
+
 
 FLOAT* gera_transposta( size_t matrix_tam , FLOAT* A ){
     FLOAT initial_t = omp_get_wtime();
@@ -200,23 +211,14 @@ FLOAT* strassen( size_t matrix_tam , FLOAT* M1 , FLOAT* M2 ){
         }
     }
     // Ate que dimensao continuar a recursao com o Strassen
-    if(matrix_tam <= 1024 ){
-        P0 = mult( matrix_tam/2 , A , FH  , 8 );
-        P1 = mult( matrix_tam/2 , AB , H  , 8 );
-        P2 = mult( matrix_tam/2 , CD , E  , 8 );
-        P3 = mult( matrix_tam/2 , D , GE  , 8 );
-        P4 = mult( matrix_tam/2 , AD , EH , 8 );
-        P5 = mult( matrix_tam/2 , BD , GH , 8 );
-        P6 = mult( matrix_tam/2 , AC , EF , 8 );
-    } else {
-        P0 = strassen( matrix_tam/2 , A , FH  );
-        P1 = strassen( matrix_tam/2 , AB , H  );
-        P2 = strassen( matrix_tam/2 , CD , E  );
-        P3 = strassen( matrix_tam/2 , D , GE  );
-        P4 = strassen( matrix_tam/2 , AD , EH );
-        P5 = strassen( matrix_tam/2 , BD , GH );
-        P6 = strassen( matrix_tam/2 , AC , EF );
-    }
+    P0 = mult( matrix_tam/2 , A , FH  , 8 );
+    P1 = mult( matrix_tam/2 , AB , H  , 8 );
+    P2 = mult( matrix_tam/2 , CD , E  , 8 );
+    P3 = mult( matrix_tam/2 , D , GE  , 8 );
+    P4 = mult( matrix_tam/2 , AD , EH , 8 );
+    P5 = mult( matrix_tam/2 , BD , GH , 8 );
+    P6 = mult( matrix_tam/2 , AC , EF , 8 );
+    
     
     free(A);free(C);free(D);free(B);
     free(E);free(F);free(G);free(H);

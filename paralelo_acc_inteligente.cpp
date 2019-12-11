@@ -1,6 +1,14 @@
 #include "matriz_io.cpp"
 #include <omp.h>
 
+/**
+ * Compilar com:
+ *      pg++ -acc paralelo_acc_inteligente.cpp -o paralelo_acc_inteligente
+ * 
+ * Executar com:
+ *      ./paralelo_acc_inteligente [TAMANHO_MATRIZ]
+**/
+
 typedef double FLOAT;
 
 FLOAT* gera_transposta( size_t matrix_tam , FLOAT* A ){
