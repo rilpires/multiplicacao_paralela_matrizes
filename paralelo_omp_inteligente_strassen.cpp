@@ -12,7 +12,7 @@ FLOAT* gera_transposta( size_t matrix_tam , FLOAT* A ){
     FLOAT* ret = (FLOAT*)malloc( sizeof(FLOAT)*matrix_tam*matrix_tam );
     int i , j;
 
-    #pragma omp parallel for private(i,j) shared(ret,A)
+    #pragma omp parallel for private(i,j) shared(ret,A,matrix_tam)
     for( j = 0 ; j < matrix_tam ; j++ ){
         for( i = 0 ; i < matrix_tam ; i++ ){
             ret[i+j*matrix_tam] = A[j+i*matrix_tam];
@@ -139,54 +139,54 @@ FLOAT* strassen( size_t matrix_tam , FLOAT* M1 , FLOAT* M2 ){
     FLOAT* EF = (FLOAT*)malloc(sizeof(FLOAT)*matrix_tam*matrix_tam/4);    
     
     size_t linha,coluna;
-
-    #pragma omp parallel for private(linha,coluna)
+    int temp1 , temp2 , temp3 , temp4;
+    #pragma omp parallel for private(linha,coluna) private(temp1,temp2,temp3,temp4) shared(matrix_tam)
     for(linha=0;linha<matrix_tam/2;linha++){
-        int temp = linha*matrix_tam , temp2 = linha*matrix_tam/2 , temp3 , temp4 ;
+        temp1 = linha*matrix_tam , temp2 = linha*matrix_tam/2;
         for(coluna=0;coluna<matrix_tam/2;coluna++){
-            temp3 = coluna+temp;
+            temp3 = coluna+temp1;
             temp4 = coluna+temp2;
             A[temp4] = M1[temp3];
             E[temp4] = M2[temp3];
         }
     }
-    #pragma omp parallel for private(linha,coluna)
+    #pragma omp parallel for private(linha,coluna) private(temp1,temp2,temp3,temp4) shared(matrix_tam)
     for(linha=0;linha<matrix_tam/2;linha++){
-        int temp = linha*matrix_tam , temp2 = linha*matrix_tam/2 , temp3 , temp4 ;
+        temp1 = linha*matrix_tam , temp2 = linha*matrix_tam/2;
         for(coluna=matrix_tam/2;coluna<matrix_tam;coluna++){
-            temp3 = coluna+temp;
+            temp3 = coluna+temp1;
             temp4 = coluna+temp2-matrix_tam/2;
             B[temp4] = M1[temp3];
             F[temp4] = M2[temp3];
         }
     }
-    #pragma omp parallel for private(linha,coluna)
+    #pragma omp parallel for private(linha,coluna) private(temp1,temp2,temp3,temp4) shared(matrix_tam)
     for(linha=matrix_tam/2;linha<matrix_tam;linha++){
-        int temp = linha*matrix_tam , temp2 = (linha-matrix_tam/2)*matrix_tam/2 , temp3 , temp4 ;
+        temp1 = linha*matrix_tam , temp2 = (linha-matrix_tam/2)*matrix_tam/2;
         for(coluna=0;coluna<matrix_tam/2;coluna++){
-            temp3 = coluna+temp;
+            temp3 = coluna+temp1;
             temp4 = coluna+temp2;
             C[temp4] = M1[temp3];
             G[temp4] = M2[temp3];
         }
     }
-    #pragma omp parallel for private(linha,coluna)
+    #pragma omp parallel for private(linha,coluna) private(temp1,temp2,temp3,temp4) shared(matrix_tam)
     for(linha=matrix_tam/2;linha<matrix_tam;linha++){
-        int temp = linha*matrix_tam , temp2 = (linha-matrix_tam/2)*matrix_tam/2 , temp3 , temp4 ;
+        temp1 = linha*matrix_tam , temp2 = (linha-matrix_tam/2)*matrix_tam/2;
         for(coluna=matrix_tam/2;coluna<matrix_tam;coluna++){
-            temp3 = coluna+temp;
+            temp3 = coluna+temp1;
             temp4 = coluna+temp2-matrix_tam/2;
             D[temp4] = M1[temp3];
             H[temp4] = M2[temp3];
         }
     }
-    
+
     size_t temp_tam2 = matrix_tam/2;
-    #pragma omp parallel for
-    for( size_t linha=0 ; linha<temp_tam2 ; linha++ ){
-        size_t temp=linha*matrix_tam/2 , temp2;
-        for( size_t coluna=0 ; coluna<temp_tam2 ; coluna++ ){
-            temp2 = coluna+temp;
+    #pragma omp parallel for private(linha,coluna) private(temp1,temp2) shared(matrix_tam)
+    for( linha=0 ; linha<temp_tam2 ; linha++ ){
+        temp1=linha*matrix_tam/2 , temp2;
+        for( coluna=0 ; coluna<temp_tam2 ; coluna++ ){
+            temp2 = coluna+temp1;
             FH[temp2] = F[temp2] - H[temp2];
             AB[temp2] = A[temp2] + B[temp2];
             CD[temp2] = C[temp2] + D[temp2];
@@ -199,7 +199,6 @@ FLOAT* strassen( size_t matrix_tam , FLOAT* M1 , FLOAT* M2 ){
             EF[temp2] = E[temp2] + F[temp2];
         }
     }
-
     // Ate que dimensao continuar a recursao com o Strassen
     if(matrix_tam <= 1024 ){
         P0 = mult( matrix_tam/2 , A , FH  , 8 );
@@ -224,38 +223,38 @@ FLOAT* strassen( size_t matrix_tam , FLOAT* M1 , FLOAT* M2 ){
     free(FH);free(AB);free(CD);free(GE);free(AD);
     free(EH);free(BD);free(GH);free(AC);free(EF);
     
-    #pragma omp parallel for private(linha,coluna)
+    #pragma omp parallel for private(linha,coluna) private(temp1,temp2,temp3,temp4) shared(matrix_tam)
     for(linha=0;linha<matrix_tam/2;linha++){
-        int temp = linha*matrix_tam , temp2 = linha*matrix_tam/2 , temp3 , temp4 ;
+        temp1 = linha*matrix_tam , temp2 = linha*matrix_tam/2;
         for(coluna=0;coluna<matrix_tam/2;coluna++){
-            temp3 = temp+coluna;
+            temp3 = temp1+coluna;
             temp4 = temp2+coluna;
             Z[temp3] = P3[temp4] + P4[temp4] + P5[temp4] - P1[temp4];
         }
     }
-    #pragma omp parallel for private(linha,coluna)
+    #pragma omp parallel for private(linha,coluna) private(temp1,temp2,temp3,temp4) shared(matrix_tam)
     for(linha=0;linha<matrix_tam/2;linha++){
-        int temp = linha*matrix_tam , temp2 = linha*matrix_tam/2 , temp3 , temp4 ;
+        temp1 = linha*matrix_tam , temp2 = linha*matrix_tam/2;
         for(coluna=matrix_tam/2;coluna<matrix_tam;coluna++){
-            temp3 = temp + coluna;
+            temp3 = temp1 + coluna;
             temp4 = temp2 + coluna - matrix_tam/2;
             Z[temp3] = P0[temp4] + P1[temp4];
         }
     }
-    #pragma omp parallel for private(linha,coluna)
+    #pragma omp parallel for private(linha,coluna) private(temp1,temp2,temp3,temp4) shared(matrix_tam)
     for(linha=matrix_tam/2;linha<matrix_tam;linha++){
-        int temp = linha*matrix_tam , temp2 = (linha-matrix_tam/2)*matrix_tam/2 , temp3 , temp4 ;
+        temp1 = linha*matrix_tam , temp2 = (linha-matrix_tam/2)*matrix_tam/2;
         for(coluna=0;coluna<matrix_tam/2;coluna++){
-            temp3 = temp + coluna;
+            temp3 = temp1 + coluna;
             temp4 = temp2 + coluna;
             Z[temp3] = P2[temp4] + P3[temp4];
         }
     }
-    #pragma omp parallel for private(linha,coluna)
+    #pragma omp parallel for private(linha,coluna) private(temp1,temp2,temp3,temp4) shared(matrix_tam)
     for(linha=matrix_tam/2;linha<matrix_tam;linha++){
-        int temp = linha*matrix_tam , temp2 = (linha-matrix_tam/2)*matrix_tam/2 , temp3 , temp4 ;
+        temp1 = linha*matrix_tam , temp2 = (linha-matrix_tam/2)*matrix_tam/2;
         for(coluna=matrix_tam/2;coluna<matrix_tam;coluna++){
-            temp3 = temp + coluna;
+            temp3 = temp1 + coluna;
             temp4 = temp2 + coluna - matrix_tam/2;
             Z[temp3] = P0[temp4] + P4[temp4] - P2[temp4] - P6[temp4];
         }
@@ -307,4 +306,5 @@ int main( int argc , char** argv ){
 
     printf("[Corretude]\nOs 3 primeiros valores de C:\n" );
     printf("C: %f %f %f \n" , C[0] , C[1] , C[2] );
+
 }
